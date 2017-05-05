@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>CelerFT</title>
+    <style>
+        #uploadfileform{
+            width:56%;  height:50%;  
+            position:absolute;
+            top:20px; 
+            left:20px;
+        }
+        #uploadfileprogress{
+            width:40%;  height:50%;  
+            position:absolute;
+            top:20px; 
+            right:20px;
+        }
+        #uploadfileresults{
+            width:56%;  height:45%;  
+            position:absolute;
+            bottom:-340px; 
+            left:20px;
+        }
+        #uploadfileerrors{
+            width:40%;  height:45%;  
+            position:absolute;
+            bottom:-340px;
+            right:20px;
+        }
+        #legend_uploadfileform {
+            background-color:#CCCCCC;  
+            padding: 0.2em 0.5em;
+            border: 2px solid green;
+            color: green;
+            font-size: 140%;
+            text-align: left;
+            font-weight:bolder;
+        }
+         div.progressbar{
+            background-color:green;
+            font-size:80%;
+            text-align:center;
+            color:white;
+            width:0%
+        }
+          fieldset.top {
+            padding: 5px 10px;
+            border: 2px solid green;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+            height:auto;
+        }
+        fieldset.bottom{
+
+            padding: 5px 10px;
+            border: 2px solid green;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+            height:260px;
+        }
+        legend.main{
+            padding: 0.2em 0.5em;
+            font-size: 140%;
+            text-align: left;
+
+        }
+         legend.progress{
+            font-size: 80%;
+            text-align: left;
+
+        }
+        li.form {
+            padding:5px 5px
+        }
+
+        table {
+            width:90%;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            font-size:80%;
+        }
+ 
+        table#t01 tr:nth-child(even) {
+            background-color: #eee;
+        }
+        table#t01 tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        table#t01 th {
+            color: white;
+            background-color: black;
+
+        }
+        
+    </style>
+    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <script src="Scripts/subworkers.js"></script>
+    <script src="Scripts/celerft.js"></script>
+</head>
+<!-- In order to position the <div> elements correctly on the page we set the <div> element position relative to the
+     <body> elemnt of the page. This cause the <div> element to maintain their position evene when teh browser window is resized.-->
+<body style="position:relative;width:100%">
+    <div id="uploadfileform">
+        <form name="ClerFTFileUpload">
+            <fieldset class="top">
+                <legend id="legend_uploadfileform">CelerFT File Uploader</legend>
+                <ol style="list-style:none">
+                    <li class="form">
+                        <label for="select_directory" style="float:left;width:410px">Please enter the name for the destination directory:</label>
+                        <input type="text" id="select_directory" name="directoryname" style="width:200px" />
+                    <li />
+                    <li class="form">
+                        <label for="select_file" style="float:left;width:410px">Please select up to 5 files to upload: </label>
+                        <input type="file" id="select_file" name="files[]" multiple style="width:200px" />
+                    </li>
+                    <li class="form">
+                        <label for="select_asyncstate" style="float:left;width:410px">Upload files chunks asynchronously </label>
+                        <input type="checkbox" id="select_asyncstate" name="asyncstate" />
+                    </li>
+                    <li class="form">
+                        <label for="select_parallelupload" style="float:left;width:410px">Upload file chunks in parallel </label>
+                        <input type="checkbox" id="select_parallelupload" name="parallelupload" />
+                    </li>
+                    <li class="form">
+                        <label for="select_xfilename" style="float:left;width:410px">Backend supports X-File-Name: <font color="blue">(Note backend server saves the file and sends the path to the file in a X-File-Name header)</font></label>
+                        <input type="checkbox" id="select_xfilename" name="xfilename" />
+                    </li>
+                    <li class="form">
+                        <p></p>
+                    </li>
+                    <li class="form">
+                        <label for="select_bytesperchunk" style="float:left;width:410px">Select the bytes per chunk: </label>
+                        <select id="select_bytesperchunk" name="bytesperchunk" style="width:200px">
+                            <option value="1">50MB</option>
+                            <option value="2">20MB</option>
+                            <option value="3">10MB</option>
+                            <option value="4">5MB</option>
+                            <option value="5">2MB</option>
+                            <option selected="selected" value="6">1MB</option>
+                            <option value="7">500K</option>
+                            <option value="8">256K</option>
+                            <option value="9">128K</option>
+                            <option value="10">64K</option>
+                        </select>
+                    </li>
+                    <li class="form">
+                        <input type="button" id="cancel_workers" value="Cancel Uploads" style="float:right;margin-left: 10px" />
+                        <!--<input type="button" id="pause_upload" value="Pause Uploads" style="float:right;margin-left: 10px" />-->
+                        <input type="button" id="resume_upload" value="Resume Uploads" style="float:right;margin-left: 10px" />
+                        <input type="submit" id="upload_file" value="Upload Files" style="float:right" />
+                    </li>
+                </ol>
+            </fieldset>
+        </form>
+    </div>
+    <div id="uploadfileprogress">
+        <fieldset class="top">
+            <legend class="main">Upload Progress</legend>
+            <div style="height:230px;overflow-y:scroll">
+                <!-- File name 0 -->
+                <fieldset id="file_name0" style="height:auto;width:90%">
+                    <legend class="progress"></legend>
+                    <ol style="list-style:none">
+                        <li>
+                            <!-- Progress bar 0-->
+                            <div style="width:90%">
+                                <div id="progressbar0" class="progressbar"></div>
+                            </div>
+                        </li>
+                    </ol>
+                </fieldset>
+                <!-- File name 1 -->
+                <fieldset id="file_name1" style="height:auto;width:90%">
+                    <legend class="progress"></legend>
+                    <ol style="list-style:none">
+                        <li>
+                            <!-- Progress bar 1-->
+                            <div style="width:90%">
+                                <div id="progressbar1" class="progressbar"></div>
+                            </div>
+                        </li>
+                    </ol>
+                </fieldset>
+                <!-- File name 2 -->
+                <fieldset id="file_name2" style="height:auto;width:90%">
+                    <legend class="progress"></legend>
+                    <ol style="list-style:none">
+                        <li>
+                            <!-- Progress bar 2-->
+                            <div style="width:90%">
+                                <div id="progressbar2" class="progressbar"></div>
+                            </div>
+                        </li>
+                    </ol>
+                </fieldset>
+                <!-- File name 3 -->
+                <fieldset id="file_name3" style="height:auto;width:90%">
+                    <legend class="progress"></legend>
+                    <ol style="list-style:none">
+                        <li>
+                            <!-- Progress bar 3-->
+                            <div style="width:90%">
+                                <div id="progressbar3" class="progressbar"></div>
+                            </div>
+                        </li>
+                    </ol>
+                </fieldset>
+                <!-- File name 4 -->
+                <fieldset id="file_name4" style="height:auto;width:90%">
+                    <legend class="progress"></legend>
+                    <ol style="list-style:none">
+                        <li>
+                            <!-- Progress bar 4-->
+                            <div style="width:90%">
+                                <div id="progressbar4" class="progressbar"></div>
+                            </div>
+                        </li>
+                    </ol>
+                </fieldset>
+            </div>
+        </fieldset>
+    </div>
+    <div id="uploadfileresults">
+        <fieldset class="bottom">
+            <legend class="main">Upload Results</legend>
+            <div style="overflow-y:scroll;height:200px">
+                <table id="t01">
+                    <tr>
+                        <th>Filename</th>
+                        <th>Local MD5 Checksum</th>
+                        <th>Remote MD5 Checksum</th>
+                    </tr>
+                    <tr>
+                        <td id="file0"></td>
+                        <td id="local0"></td>
+                        <td id="remote0"></td>
+                    </tr>
+                    <tr>
+                        <td id="file1"></td>
+                        <td id="local1"></td>
+                        <td id="remote1"></td>
+                    </tr>
+                    <tr>
+                        <td id="file2"></td>
+                        <td id="local2"></td>
+                        <td id="remote2"></td>
+                    </tr>
+                    <tr>
+                        <td id="file3"></td>
+                        <td id="local3"></td>
+                        <td id="remote3"></td>
+                    </tr>
+                    <tr>
+                        <td id="file4"></td>
+                        <td id="local4"></td>
+                        <td id="remote4"></td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+    <!-- Error Message-->
+    <div id="uploadfileerrors">
+        <fieldset class="bottom">
+            <legend class="main">Error Messages</legend>
+            <div id="errormessage" style="color:red;overflow-y:scroll;height:200px"></div>
+        </fieldset>
+    </div>
+
+    <!-- Check browser compatability -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            if (!(window.File && window.Blob && window.FormData)) {
+                alert("Please upgrade your browser to one that supports the HTML5 file api.");
+                return;
+            }
+
+            if (typeof Worker == "undefined") {
+                alert("Please upgrade your browser to one that supports the HTML5 Webworker api.");
+                return;
+            }
+
+            // options to send to the celerft.js
+            // We are going to use JQuery to select the controls so we put a #
+            // at the start of the name for the non-button controls
+            var uicontrols = {
+
+                cancelbuttonid: 'cancel_workers',
+                directoryselectorid: '#select_directory',
+                errorcontrolid: '#errormessage',
+                fileselectorid: '#select_file',
+                fieldsetid: '#file_name',
+                //pausebuttonid: 'pause_upload',
+                progressbarid: '#progressbar',
+                resumebuttonid: 'resume_upload',
+                selectasnycstateid: '#select_asyncstate',
+                selectparalleluploadid: '#select_parallelupload',
+                tdfileid: '#file',
+                tdlocalchecksumid: '#local',
+                tdremotechecksumid: '#remote',
+                uploadbuttonid: 'upload_file'
+            }
+
+            var urls = {
+
+                checksumurl: '/api/CelerFTFileUpload/GetChecksum',
+                chunkinfourl: '/api/CelerFTFileUpload/GetChunkInfo',
+                fileinfourl: '/api/CelerFTFileUpload/GetFileInfo',
+                mergeallurl: '/api/CelerFTFileUpload/MergeAll',
+                uploadurl: '/api/CelerFTFileUpload/UploadChunk',
+            }
+
+            var options = {
+
+                bytesperchunk: undefined,
+                maxFiles: 5,
+                maxParallelUploads: 2,
+                uploadlargfileasync: false,
+                uicontrols: uicontrols,
+                urls: urls,
+                xfilenameuploads: false
+            }
+
+
+            var cft = new CelerFT(options);
+            cft.init();
+
+        });
+    </script>
+
+
+</body>
+</html>
