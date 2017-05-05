@@ -51,7 +51,7 @@ object as well.
                 errorcontrolid: '#errormessage',
                 fileselectorid: '#select_file',
                 fieldsetid: '#file_name',
-                //pausebuttonid: 'pause_upload',
+                pausebuttonid: undefined,
                 progressbarid: '#progressbar',
                 resumebuttonid: 'resume_upload',
                 selectasnycstateid: '#select_asyncstate',
