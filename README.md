@@ -30,7 +30,7 @@ object as well.
     <script type="text/javascript">
         $(document).ready(function () {
 
-           <!-- Check browser compatability -->
+            <!-- Check browser compatability -->
             if (!(window.File && window.Blob && window.FormData)) {
                 alert("Please upgrade your browser to one that supports the HTML5 file api.");
                 return;
@@ -66,6 +66,7 @@ object as well.
 
                 checksumurl: '/api/CelerFTFileUpload/GetChecksum',
                 chunkinfourl: '/api/CelerFTFileUpload/GetChunkInfo',
+                fileinfourl: '/api/CelerFTFileUpload/GetFileInfo',
                 mergeallurl: '/api/CelerFTFileUpload/MergeAll',
                 uploadurl: '/api/CelerFTFileUpload/UploadChunk',
             }
