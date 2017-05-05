@@ -23,7 +23,7 @@ CelerFT is added to your application by adding the celerft.js script to your web
 ```
 Once the celerft.js script is added to the web page CelerFT is activated in the page by creating a new CelerFT object and passing an 
 options object to it. The options object should contain the id of all the UI controls that CelerFT needs to interact with. This includes
-the uplaod and resume buttons and teh file control. The end points to the backend services should be passed to CelerFT in the options 
+the upload and resume buttons and the file control. The urls for the backend services should be passed to CelerFT in the options 
 object as well.
 
 ```html
