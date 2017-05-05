@@ -13,13 +13,13 @@ CelerFT supports the resuming of a file upload and also supports the simultaneuo
 
 The client side portion of CelerFT is written as a Javascript module and requires that the browser supports the HTML5 File API, HTML5 Web Workers, HTML5 Nested Web Workers, and the HTML5 XMLHTTPRequest Level 2. If the web browser does not support HTML5 Nested Web Workers then the subworkers.js polyfill can be used to provide this support. 
 
-CelerFT is added to your application by adding the celerft.js script to your web page as shown in the following example:
+CelerFT is added to your application by adding the celerft.js module to your web page as shown in the following example:
 ```html
     <script src="Scripts/jquery-2.1.1.min.js"></script>
     <script src="Scripts/subworkers.js"></script>
     <script src="Scripts/celerft.js"></script>
 ```
-Once the celerft.js script is added to the web page CelerFT is activated in the page by creating a new CelerFT object and passing an 
+Once the celerft.js module is added to the web page CelerFT is activated in the page by creating a new CelerFT object and passing an 
 options object to it. The options object should contain the id of all the UI controls that CelerFT needs to interact with. This includes
 the upload and resume buttons and the file control. The urls for the backend services should be passed to CelerFT in the options 
 object as well.
