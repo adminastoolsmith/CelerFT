@@ -90,7 +90,7 @@ object as well.
     </script>
 ```
 
-##### Backend
+##### Supported Backends
 
 CelerFT backend examples are provided in Node.JS and the ASP .NET Web API.
 
