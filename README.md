@@ -8,10 +8,9 @@ the file into chunks and then uploads each chunk to the web server. Once the all
 the web server to assemble the chunks into the file. On the completion of the merge request the MD5 checksum is generated for the 
 uploaded file and the local file.
 
-Web servers have a maximum file upload size and CelerFT is able to get around this by splitting the file into chunks and uploading the
-chunks to the web server. This allows CelerFT to support the uploading of Gigabit sized files.
+Web servers have a maximum file upload size and CelerFT is able to get around this by splitting the file into chunks and uploading each of the chunks to the web server. This allows CelerFT to support the uploading of Gigabit sized files.
 
-CelerFT supports multiple upload of file chunks and resuming a file upload.
+CelerFT supports the resuming of a file upload and also supports the simultaneuos uploading of several file chunks.
 
 The client side portion of CelerFT is written in Javascript and requires that the browser supports the HTML5 File API, HTML5 Web Workers,
 HTML5 Nested Web Workers, and the HTML5 XMLHTTPRequest Level 2. If the web browser does not support HTML5 Nested Web Workers then 
