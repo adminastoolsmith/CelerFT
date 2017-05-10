@@ -14,7 +14,7 @@
  *               
  * Author - Nigel Thomas
  * 
- * Copyright 2014 by Nigel Thomas<nigelbtomas@gmail.com>
+ * Copyright 2014 - 2016 by Nigel Thomas<nigelbtomas@gmail.com>
  * 
  *  */
 
